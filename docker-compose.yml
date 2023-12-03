@@ -1,0 +1,58 @@
+version: '3.9'
+services:
+
+  postgres-local-webstore:
+    image: postgres:16
+    container_name: web_store_service_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: web_store_service_db
+    ports:
+      - "5434:5432"
+    networks:
+      - webstore-network
+
+  webstore-service:
+    image: webstore-service-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres-local-webstore
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      FEIGN_URL: http://webstore-auth-service:8081
+    networks:
+      - webstore-network
+
+  postgres-local-auth:
+    image: postgres:16
+    container_name: web_store_users_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: web_store_users_db
+    ports:
+      - "5433:5432"
+    networks:
+      - webstore-network
+
+  webstore-auth-service:
+    image: webstore-auth-app:latest
+    build:
+      context: ../webstore-auth-service/
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres-local-auth
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - webstore-network
+
+networks:
+  webstore-network:
