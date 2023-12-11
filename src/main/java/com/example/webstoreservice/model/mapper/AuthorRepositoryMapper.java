@@ -1,7 +1,9 @@
 package com.example.webstoreservice.model.mapper;
 
+import com.example.commoncode.model.mapper.CustomMapping;
 import com.example.webstoreservice.model.entity.Author;
 import com.example.webstoreservice.repository.AuthorRepository;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

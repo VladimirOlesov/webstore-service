@@ -1,5 +1,6 @@
 package com.example.webstoreservice.model.entity;
 
+import com.example.commoncode.model.entity.BaseEntity;
 import com.example.webstoreservice.model.enums.OrderStatus;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;

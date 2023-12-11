@@ -1,7 +1,7 @@
 package com.example.webstoreservice.repository;
 
 import static com.example.webstoreservice.model.entity.Author.Fields.authorName;
-import static com.example.webstoreservice.model.entity.BaseEntity.Fields.id;
+import static com.example.commoncode.model.entity.BaseEntity.Fields.id;
 import static com.example.webstoreservice.model.entity.Book.Fields.ISBN;
 import static com.example.webstoreservice.model.entity.Book.Fields.author;
 import static com.example.webstoreservice.model.entity.Book.Fields.deleted;

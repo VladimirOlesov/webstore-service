@@ -1,6 +1,6 @@
 package com.example.webstoreservice.service.impl;
 
-import com.example.webstoreservice.exception.DuplicateException;
+import com.example.commoncode.exception.DuplicateException;
 import com.example.webstoreservice.model.dto.OrderDto;
 import com.example.webstoreservice.model.dto.UserDto;
 import com.example.webstoreservice.model.entity.Book;
@@ -36,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
     UserDto user = userService.getAuthenticatedUser();
     return orderRepository.findByUserUuidAndStatusWithBooks(user.userUuid(), OrderStatus.IN_CART)
         .map(orderMapper::toOrderDto)
-        .orElse(OrderDto.builder().books(Set.of()).build());
+        .orElse(OrderDto.builder().status(OrderStatus.IN_CART).books(Set.of()).build());
   }
 
   @Override

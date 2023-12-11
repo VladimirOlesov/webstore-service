@@ -30,6 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final AuthServiceClient authService;
 
+  private final static ThreadLocal<String> tokenThreadLocal = new ThreadLocal<>();
+
   @Override
   protected void doFilterInternal(
       @NonNull HttpServletRequest request,
@@ -46,6 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     jwt = authHeader.substring(7);
     uuid = jwtService.extractUuid(jwt);
     if (uuid != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+      tokenThreadLocal.set(jwt);
       UserDto userDto = authService.getUserDtoByUuid(UUID.fromString(uuid));
       UserDetails userDetails = User.builder()
           .username(userDto.username())
@@ -60,5 +63,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       }
     }
     filterChain.doFilter(request, response);
+    tokenThreadLocal.remove();
+  }
+
+  public static String getCurrentToken() {
+    return tokenThreadLocal.get();
   }
 }

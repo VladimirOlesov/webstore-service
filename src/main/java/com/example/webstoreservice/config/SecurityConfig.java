@@ -25,7 +25,7 @@ public class SecurityConfig {
     return http
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/auth/**", "/books/**", "/authors/**", "/genres/**",
+            .requestMatchers("/actuator/**", "/auth/**", "/books/**", "/authors/**", "/genres/**",
                 "/swagger-ui/**", "/v3/api-docs/**").permitAll()
             .requestMatchers("/favorites/**", "/orders/**").hasAnyAuthority("USER",
                 "ADMIN").requestMatchers("/admin/**").hasAuthority("ADMIN").anyRequest()

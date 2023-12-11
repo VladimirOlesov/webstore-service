@@ -11,8 +11,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
+import com.example.commoncode.exception.DuplicateException;
+import com.example.commoncode.model.enums.Role;
 import com.example.webstoreservice.IntegrationTestBase;
-import com.example.webstoreservice.exception.DuplicateException;
 import com.example.webstoreservice.model.dto.OrderDto;
 import com.example.webstoreservice.model.dto.UserDto;
 import com.example.webstoreservice.model.entity.Author;
@@ -20,12 +21,12 @@ import com.example.webstoreservice.model.entity.Book;
 import com.example.webstoreservice.model.entity.Genre;
 import com.example.webstoreservice.model.entity.Order;
 import com.example.webstoreservice.model.enums.OrderStatus;
-import com.example.webstoreservice.model.enums.Role;
 import com.example.webstoreservice.repository.AuthorRepository;
 import com.example.webstoreservice.repository.BookRepository;
 import com.example.webstoreservice.repository.GenreRepository;
 import com.example.webstoreservice.repository.OrderRepository;
 import com.example.webstoreservice.service.impl.OrderServiceImpl;
+
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -139,7 +140,7 @@ class OrderServiceIT extends IntegrationTestBase {
 
     assertThat(orderDto).isNotNull();
     assertThat(orderDto.orderDate()).isNull();
-    assertThat(orderDto.status()).isNull();
+    assertThat(orderDto.status()).isEqualTo(OrderStatus.IN_CART);
     assertThat(orderDto.orderId()).isNull();
     assertThat(orderDto.books()).isEmpty();
   }

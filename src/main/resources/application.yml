@@ -1,5 +1,4 @@
 spring:
-
   application:
     name: webstore-service
 
@@ -27,10 +26,32 @@ book:
       path: C:\Pr\S\webstore-service\bookCovers
 
 feign:
-  name: webstore-auth-service
-  url: ${FEIGN_URL:http://localhost:8081}
+  webstore-auth-service:
+    name: webstore-auth-service
+    url: ${FEIGN_URL:http://localhost:8081}
 
 server:
   port: 8082
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
+  endpoint:
+    health:
+      show-details: always
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true

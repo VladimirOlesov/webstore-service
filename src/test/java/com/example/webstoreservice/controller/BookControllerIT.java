@@ -22,7 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 @AutoConfigureMockMvc
 @RequiredArgsConstructor
 class BookControllerIT extends IntegrationTestBase {

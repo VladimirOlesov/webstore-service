@@ -1,5 +1,6 @@
 package com.example.webstoreservice.model.mapper;
 
+import com.example.commoncode.model.mapper.CustomMapping;
 import com.example.webstoreservice.model.dto.BookDto;
 import com.example.webstoreservice.model.entity.Book;
 import org.mapstruct.Mapper;

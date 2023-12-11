@@ -1,5 +1,4 @@
 spring:
-
   datasource:
     url: jdbc:postgresql://localhost:5434/web_store_service_db
     username: postgres
@@ -11,3 +10,7 @@ spring:
     user: postgres
     password: password
     locations: classpath:db/migration/common, classpath:db/migration/local
+
+  docker:
+    compose:
+      enabled: false

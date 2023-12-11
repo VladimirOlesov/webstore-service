@@ -1,7 +1,7 @@
 package com.example.webstoreservice.service.impl;
 
-import com.example.webstoreservice.exception.BookCoverException;
-import com.example.webstoreservice.exception.BookExportException;
+import com.example.commoncode.exception.BookCoverException;
+import com.example.commoncode.exception.BookExportException;
 import com.example.webstoreservice.model.BookSpecifications;
 import com.example.webstoreservice.model.dto.BookDto;
 import com.example.webstoreservice.model.entity.Book;
