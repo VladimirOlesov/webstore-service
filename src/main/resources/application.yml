@@ -15,6 +15,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
 
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
 jwt:
   secret: AWqtLP+GFvnUBbpn1vbTpgmz8fwk6G14nQEVgJIBIVg=
   claim:
@@ -27,8 +32,12 @@ book:
 
 feign:
   webstore-auth-service:
-    name: webstore-auth-service
-    url: ${FEIGN_URL:http://localhost:8081}
+    auth-client:
+      name: auth-service
+      url: ${FEIGN_URL:http://localhost:8081}
+    user-client:
+      name: user-service
+      url: ${FEIGN_URL:http://localhost:8081}
 
 server:
   port: 8082
@@ -51,7 +60,6 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-
     distribution:
       percentiles-histogram:
         "[http.server.requests]": true

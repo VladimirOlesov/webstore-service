@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,8 @@ public class OrderServiceImpl implements OrderService {
   private final OrderMapper orderMapper;
 
   private final UserService userService;
+
+  private final KafkaTemplate<String, OrderDto> kafkaTemplate;
 
   @Override
   public OrderDto getCart() {
@@ -102,7 +105,11 @@ public class OrderServiceImpl implements OrderService {
 
     orderRepository.save(cartOrder);
 
-    return orderMapper.toOrderDto(cartOrder);
+    OrderDto orderDto = orderMapper.toOrderDto(cartOrder);
+
+    kafkaTemplate.send("order-topic", orderDto);
+
+    return orderDto;
   }
 
   @Override

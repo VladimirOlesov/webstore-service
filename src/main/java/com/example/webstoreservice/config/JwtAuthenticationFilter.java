@@ -1,6 +1,6 @@
 package com.example.webstoreservice.config;
 
-import com.example.webstoreservice.feign.AuthServiceClient;
+import com.example.webstoreservice.feign.UserClient;
 import com.example.webstoreservice.model.dto.UserDto;
 import com.example.webstoreservice.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtService jwtService;
 
-  private final AuthServiceClient authService;
+  private final UserClient userService;
 
   private final static ThreadLocal<String> tokenThreadLocal = new ThreadLocal<>();
 
@@ -49,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     uuid = jwtService.extractUuid(jwt);
     if (uuid != null && SecurityContextHolder.getContext().getAuthentication() == null) {
       tokenThreadLocal.set(jwt);
-      UserDto userDto = authService.getUserDtoByUuid(UUID.fromString(uuid));
+      UserDto userDto = userService.getUserDtoByUuid(UUID.fromString(uuid));
       UserDetails userDetails = User.builder()
           .username(userDto.username())
           .password(userDto.password())

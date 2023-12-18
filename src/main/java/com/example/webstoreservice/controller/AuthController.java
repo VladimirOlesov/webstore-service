@@ -1,6 +1,6 @@
 package com.example.webstoreservice.controller;
 
-import com.example.webstoreservice.feign.AuthServiceClient;
+import com.example.webstoreservice.feign.AuthClient;
 import com.example.webstoreservice.model.dto.UserDtoLogin;
 import com.example.webstoreservice.model.dto.UserDtoRegister;
 import jakarta.validation.Valid;
@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-  private final AuthServiceClient authService;
+  private final AuthClient authClient;
 
   @PostMapping("/register")
   public ResponseEntity<UserDtoRegister> register(@Valid @RequestBody UserDtoRegister userDto) {
-    return ResponseEntity.ok(authService.register(userDto));
+    return ResponseEntity.ok(authClient.register(userDto));
   }
 
   @PostMapping("/login")
   public ResponseEntity<String> login(@Valid @RequestBody UserDtoLogin userDto) {
-    return ResponseEntity.ok(authService.authenticate(userDto));
+    return ResponseEntity.ok(authClient.authenticate(userDto));
   }
 }

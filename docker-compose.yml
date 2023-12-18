@@ -25,6 +25,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       FEIGN_URL: http://webstore-auth-service:8081
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
     networks:
       - webstore-network
 
@@ -51,6 +52,7 @@ services:
       - postgres-local-auth
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      KAFKA_BOOTSTRAP_SERVERS: broker:29092
     networks:
       - webstore-network
 

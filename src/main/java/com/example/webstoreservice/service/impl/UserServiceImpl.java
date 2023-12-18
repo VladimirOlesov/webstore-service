@@ -1,6 +1,6 @@
 package com.example.webstoreservice.service.impl;
 
-import com.example.webstoreservice.feign.AuthServiceClient;
+import com.example.webstoreservice.feign.UserClient;
 import com.example.webstoreservice.model.dto.UserDto;
 import com.example.webstoreservice.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-  private final AuthServiceClient authServiceClient;
+  private final UserClient userService;
 
   @Override
   public UserDto getAuthenticatedUser() {
@@ -20,6 +20,6 @@ public class UserServiceImpl implements UserService {
     if (username == null || username.isEmpty()) {
       throw new EntityNotFoundException("Пользователь не аутентифицирован");
     }
-    return authServiceClient.getUserDtoByUsername(username);
+    return userService.getUserDtoByUsername(username);
   }
 }
