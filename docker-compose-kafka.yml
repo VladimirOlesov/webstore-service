@@ -10,6 +10,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - webstore-kafka-network
 
   broker:
     image: confluentinc/cp-server:7.3.3
@@ -38,6 +40,9 @@ services:
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+    networks:
+      - webstore-kafka-network
+      - webstore-network
 
   control-center:
     image: confluentinc/cp-enterprise-control-center:7.3.3
@@ -54,6 +59,8 @@ services:
       CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       PORT: 9021
+    networks:
+      - webstore-kafka-network
 
   kadeck:
     image: xeotek/kadeck:5.0.6
@@ -63,3 +70,9 @@ services:
     environment:
       XEOTEK_KADECK_FREE: vmolesov@yandex.ru
       XEOTEK_KADECK_PORT: 80
+    networks:
+      - webstore-kafka-network
+
+networks:
+  webstore-network:
+  webstore-kafka-network:

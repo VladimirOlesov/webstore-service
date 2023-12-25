@@ -12,6 +12,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 
+/**
+ * Сущность для хранения информации об авторах электронных книг.
+ * Наследует поле 'id' от базового класса BaseEntity.
+ */
 @Builder
 @FieldNameConstants
 @NoArgsConstructor
@@ -23,6 +27,9 @@ import lombok.experimental.FieldNameConstants;
 @Table(name = "authors")
 public class Author extends BaseEntity {
 
+  /**
+   * Имя автора.
+   */
   @Column(name = "author_name", nullable = false)
   private String authorName;
 }

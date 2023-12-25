@@ -12,6 +12,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 
+/**
+ * Сущность для хранения информации о жанрах электронных книг.
+ * Наследует поле 'id' от базового класса BaseEntity.
+ */
 @Builder
 @FieldNameConstants
 @NoArgsConstructor
@@ -23,6 +27,9 @@ import lombok.experimental.FieldNameConstants;
 @Table(name = "genres")
 public class Genre extends BaseEntity {
 
+  /**
+   * Название жанра.
+   */
   @Column(name = "genre_name", nullable = false)
   private String genreName;
 }

@@ -19,6 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Реализация сервиса {@link FavoriteService} для работы с избранными книгами.
+ */
 @RequiredArgsConstructor
 @Service
 public class FavoriteServiceImpl implements FavoriteService {
@@ -33,6 +36,13 @@ public class FavoriteServiceImpl implements FavoriteService {
 
   private final UserService userService;
 
+  /**
+   * Удаление книги из списка избранного пользователя.
+   *
+   * @param bookId Идентификатор книги.
+   * @throws EntityNotFoundException, если книга не найдена в избранном пользователя.
+   * @throws EntityNotFoundException, если пользователь не аутентифицирован.
+   */
   @Override
   @Transactional
   public void removeFromFavorites(Long bookId) {
@@ -44,6 +54,14 @@ public class FavoriteServiceImpl implements FavoriteService {
     favoriteRepository.delete(favorite);
   }
 
+  /**
+   * Добавление книги в список избранного пользователя.
+   *
+   * @param bookId Идентификатор книги.
+   * @return Объект {@link FavoriteIdDto} с информацией о добавленной книге в избранное.
+   * @throws EntityNotFoundException, если книга не найдена.
+   * @throws EntityNotFoundException, если пользователь не аутентифицирован.
+   */
   @Override
   @Transactional
   public FavoriteIdDto addToFavorites(Long bookId) {
@@ -60,6 +78,13 @@ public class FavoriteServiceImpl implements FavoriteService {
     return favoriteMapper.favoriteIdToDto(favorite.getId());
   }
 
+  /**
+   * Получение списка избранных книг пользователя.
+   *
+   * @return Список объектов {@link BookDto} избранных книг пользователя.
+   * @throws EntityNotFoundException, если в избранном пользователя нет книг.
+   * @throws EntityNotFoundException, если пользователь не аутентифицирован.
+   */
   @Override
   public List<BookDto> getFavoriteBooks() {
     UserDto user = userService.getAuthenticatedUser();

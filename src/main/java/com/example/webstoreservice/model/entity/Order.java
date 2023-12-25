@@ -10,7 +10,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -23,6 +22,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
 
+/**
+ * Сущность для хранения информации о заказах пользователей. Наследует поле 'id' от базового класса
+ * BaseEntity.
+ */
 @Builder
 @FieldNameConstants
 @NoArgsConstructor
@@ -34,16 +37,28 @@ import lombok.experimental.FieldNameConstants;
 @Table(name = "orders")
 public class Order extends BaseEntity {
 
+  /**
+   * Уникальный идентификатор пользователя
+   */
   @Column(name = "user_uuid", nullable = false)
   private UUID userUuid;
 
+  /**
+   * Время и дата подтверждения заказа.
+   */
   @Column(name = "order_date", columnDefinition = "timestamp")
   private LocalDateTime orderDate;
 
+  /**
+   * Статус заказа.
+   */
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
   private OrderStatus status;
 
+  /**
+   * Книги, относящиеся к заказам пользователей.
+   */
   @Builder.Default
   @ManyToMany
   @JoinTable(

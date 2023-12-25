@@ -21,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+/**
+ * Реализация сервиса {@link GenreService} для работы с жанрами.
+ */
 @RequiredArgsConstructor
 @Service
 public class GenreServiceImpl implements GenreService {
@@ -29,6 +32,15 @@ public class GenreServiceImpl implements GenreService {
 
   private final EntityManager entityManager;
 
+  /**
+   * Получение списка жанров с применением фильтрации и сортировкой.
+   *
+   * @param genreName     Название жанра для фильтрации.
+   * @param sortDirection Направление сортировки {@link SortDirection#ASC} или
+   *                      {@link SortDirection#DESC}.
+   * @return Список жанров, удовлетворяющих условиям.
+   * @throws EntityNotFoundException, если жанры не найдены.
+   */
   @Override
   public List<GenreDto> getGenres(String genreName, SortDirection sortDirection) {
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();

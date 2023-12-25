@@ -11,8 +11,17 @@ import java.text.MessageFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
+/**
+ * Класс с методами для создания спецификаций {@link Specification} для сущности {@link Book}.
+ */
 public class BookSpecifications {
 
+  /**
+   * Создание спецификации для фильтрации по названию книги.
+   *
+   * @param title Название книги для фильтрации.
+   * @return Спецификация для фильтрации по названию книги.
+   */
   public static Specification<Book> titleContains(String title) {
     return (root, query, criteriaBuilder) -> {
       if (StringUtils.isEmpty(title)) {
@@ -23,6 +32,12 @@ public class BookSpecifications {
     };
   }
 
+  /**
+   * Создание спецификации для фильтрации по идентификатору автора книги.
+   *
+   * @param authorId Идентификатор автора для фильтрации.
+   * @return Спецификация для фильтрации по идентификатору автора книги.
+   */
   public static Specification<Book> authorIs(Long authorId) {
     return (root, query, criteriaBuilder) -> {
       if (authorId == null) {
@@ -32,6 +47,12 @@ public class BookSpecifications {
     };
   }
 
+  /**
+   * Создание спецификации для фильтрации по идентификатору жанра книги.
+   *
+   * @param genreId Идентификатор жанра для фильтрации.
+   * @return Спецификация для фильтрации по идентификатору жанра книги.
+   */
   public static Specification<Book> genreIs(Long genreId) {
     return (root, query, criteriaBuilder) -> {
       if (genreId == null) {
@@ -41,6 +62,13 @@ public class BookSpecifications {
     };
   }
 
+  /**
+   * Создание спецификации для фильтрации по цене книги в заданном диапазоне.
+   *
+   * @param minPrice Минимальная цена книги для фильтрации.
+   * @param maxPrice Максимальная цена книги для фильтрации.
+   * @return Спецификация для фильтрации по цене книги в заданном диапазоне.
+   */
   public static Specification<Book> priceBetween(BigDecimal minPrice, BigDecimal maxPrice) {
     return (root, query, criteriaBuilder) -> {
       if (minPrice == null && maxPrice == null) {
@@ -56,6 +84,16 @@ public class BookSpecifications {
     };
   }
 
+  /**
+   * Создание спецификации для сортировки результатов запроса.
+   *
+   * @param sortBy        Поле, по которому выполняется сортировка ({@link SortBy#TITLE},
+   *                      {@link SortBy#PRICE}, {@link SortBy#PUBLICATION_YEAR}).
+   * @param sortDirection Направление сортировки ){@link SortDirection#ASC} или
+   *                      {@link SortDirection#DESC}).
+   * @return Спецификация для сортировки результатов запроса.
+   * @throws IllegalArgumentException, если параметры сортировки имеют недопустимые значения.
+   */
   public static Specification<Book> orderBy(SortBy sortBy, SortDirection sortDirection) {
     if (sortBy == null || sortDirection == null) {
       throw new IllegalArgumentException("Параметры сортировки имеют недопустимые значения");
@@ -71,6 +109,11 @@ public class BookSpecifications {
     };
   }
 
+  /**
+   * Создание спецификации для фильтрации неудаленных книг.
+   *
+   * @return Спецификация для фильтрации неудаленных книг.
+   */
   public static Specification<Book> notDeleted() {
     return ((root, query, criteriaBuilder) -> criteriaBuilder.isFalse(root.get(Book_.deleted)));
   }

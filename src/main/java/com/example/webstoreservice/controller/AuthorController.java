@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Контроллер для управления данными об авторах книг. Предоставляет методы получения списка авторов
+ * с учетом фильтрации и сортировки.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/authors")
@@ -18,6 +22,14 @@ public class AuthorController {
 
   private final AuthorService authorService;
 
+  /**
+   * Получение списка авторов с учетом параметров фильтрации и сортировки.
+   *
+   * @param authorName    Фильтрация по имени автора.
+   * @param sortDirection Направление сортировки ({@link SortDirection#ASC} или
+   *                      {@link SortDirection#DESC}).
+   * @return Объект {@link ResponseEntity} с списком авторов {@link AuthorDto}.
+   */
   @GetMapping
   public ResponseEntity<List<AuthorDto>> gerAuthors(
       @RequestParam(name = "authorName", required = false) String authorName,

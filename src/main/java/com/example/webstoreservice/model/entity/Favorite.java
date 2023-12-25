@@ -12,6 +12,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Сущность для хранения информации об избранных книгах пользователей.
+ */
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,12 +23,21 @@ import lombok.NoArgsConstructor;
 @Table(name = "favorites")
 public class Favorite {
 
+  /**
+   * Идентификатор составного ключа
+   */
   @EmbeddedId
   private FavoriteId id;
 
+  /**
+   * Уникальный идентификатор пользователя
+   */
   @Column(name = "user_uuid", insertable = false, updatable = false)
   private UUID userUuid;
 
+  /**
+   * Книга, относящаяся к избранному пользователей.
+   */
   @ManyToOne
   @JoinColumn(name = "book_id", insertable = false, updatable = false)
   private Book book;

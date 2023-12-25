@@ -21,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+/**
+ * Реализация сервиса {@link AuthorService} для работы с авторами.
+ */
 @RequiredArgsConstructor
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -29,6 +32,15 @@ public class AuthorServiceImpl implements AuthorService {
 
   private final EntityManager entityManager;
 
+  /**
+   * Получение списка авторов с применением фильтрации и сортировкой.
+   *
+   * @param authorName    Имя автора для фильтрации.
+   * @param sortDirection Направление сортировки {@link SortDirection#ASC} или
+   *                      {@link SortDirection#DESC}.
+   * @return Список авторов, удовлетворяющих условиям.
+   * @throws EntityNotFoundException, если авторы не найдены.
+   */
   @Override
   public List<AuthorDto> getAuthors(String authorName, SortDirection sortDirection) {
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();

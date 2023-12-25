@@ -16,10 +16,15 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Реализация сервиса {@link OrderService} для работы с заказами.
+ */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -34,6 +39,11 @@ public class OrderServiceImpl implements OrderService {
 
   private final KafkaTemplate<String, OrderDto> kafkaTemplate;
 
+  /**
+   * Получение корзины текущего пользователя.
+   *
+   * @return Объект {@link OrderDto}, представляющий корзину пользователя.
+   */
   @Override
   public OrderDto getCart() {
     UserDto user = userService.getAuthenticatedUser();
@@ -42,13 +52,26 @@ public class OrderServiceImpl implements OrderService {
         .orElse(OrderDto.builder().status(OrderStatus.IN_CART).books(Set.of()).build());
   }
 
-  @Override
+  /**
+   * Внутренний метод для получения корзины текущего пользователя без маппинга в dto.
+   * В случае отсутствия корзины выбрасывает исключение {@link EntityNotFoundException}.
+   *
+   * @return Объект {@link Order}, представляющий корзину пользователя.
+   * @throws EntityNotFoundException, если корзина не найдена.
+   */
   public Order getCartInternal() {
     UserDto user = userService.getAuthenticatedUser();
     return orderRepository.findByUserUuidAndStatus(user.userUuid(), OrderStatus.IN_CART)
         .orElseThrow(() -> new EntityNotFoundException("Корзина не найдена"));
   }
 
+  /**
+   * Добавление книги в корзину пользователя.
+   *
+   * @param bookId Идентификатор книги.
+   * @return Объект {@link OrderDto}, представляющий обновленную корзину пользователя.
+   * @throws DuplicateException, если книга уже добавлена в корзину.
+   */
   @Override
   @Transactional
   public OrderDto addToCart(Long bookId) {
@@ -72,6 +95,12 @@ public class OrderServiceImpl implements OrderService {
     return orderMapper.toOrderDto(cartOrder);
   }
 
+  /**
+   * Удаление книги из корзины пользователя.
+   *
+   * @param bookId Идентификатор книги.
+   * @throws EntityNotFoundException, если книга не найдена в корзине.
+   */
   @Override
   @Transactional
   public void removeFromCart(Long bookId) {
@@ -89,12 +118,20 @@ public class OrderServiceImpl implements OrderService {
     }
   }
 
+  /**
+   * Очистка корзины пользователя.
+   */
   @Override
   @Transactional
   public void clearCart() {
     orderRepository.delete(getCartInternal());
   }
 
+  /**
+   * Подтверждение оформления заказа.
+   *
+   * @return Объект {@link OrderDto}, представляющий подтвержденный заказ.
+   */
   @Override
   @Transactional
   public OrderDto confirmOrder() {
@@ -104,6 +141,7 @@ public class OrderServiceImpl implements OrderService {
     cartOrder.setOrderDate(LocalDateTime.now());
 
     orderRepository.save(cartOrder);
+    log.info("Заказ с id = {} успешно подтвержден", cartOrder.getId());
 
     OrderDto orderDto = orderMapper.toOrderDto(cartOrder);
 
@@ -112,6 +150,13 @@ public class OrderServiceImpl implements OrderService {
     return orderDto;
   }
 
+  /**
+   * Отмена оформленного заказа.
+   *
+   * @param orderId Идентификатор заказа.
+   * @throws EntityNotFoundException, если заказ не найден.
+   * @throws IllegalArgumentException, если срок отмены заказа истек.
+   */
   @Override
   @Transactional
   public void cancelOrder(Long orderId) {
@@ -126,6 +171,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     confirmedOrder.setStatus(OrderStatus.CANCELLED);
+
     orderRepository.save(confirmedOrder);
+    log.info("Заказ с id = {} успешно отменен", confirmedOrder.getId());
   }
 }

@@ -15,6 +15,7 @@ CREATE TABLE genres
 CREATE TABLE books
 (
     book_id          bigserial primary key,
+    version          bigint       not null default 1,
     title            varchar(255) not null,
     author_id        bigint references authors (author_id),
     genre_id         bigint references genres (genre_id),

@@ -36,6 +36,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Реализация сервиса {@link BookService} для работы с электронными книгами.
+ */
 @RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
@@ -47,11 +50,30 @@ public class BookServiceImpl implements BookService {
   @Value("${book.covers.upload.path}")
   private String uploadPath;
 
+  /**
+   * Получение страницы с книгами с учетом фильтрации и сортировки.
+   *
+   * @param title         Название книги для фильтрации.
+   * @param authorId      Идентификатор автора для фильтрации.
+   * @param genreId       Идентификатор жанра для фильтрации.
+   * @param minPrice      Минимальная цена книги для фильтрации.
+   * @param maxPrice      Максимальная цена книги для фильтрации.
+   * @param sortBy        Поле, по которому выполняется сортировка ({@link SortBy#TITLE},
+   *                      {@link SortBy#PRICE}, {@link SortBy#PUBLICATION_YEAR}).
+   * @param sortDirection Направление сортировки ({@link SortDirection#ASC} или
+   *                      {@link SortDirection#DESC}).
+   * @param pageable      Объект, представляющий информацию о странице и сортировке.
+   * @return Страница {@link Page} с объектами {@link BookDto} с учетом условий фильтрации и
+   * сортировки.
+   * @throws EntityNotFoundException, если не найдены соответствующие книги.
+   */
   @Override
   public Page<BookDto> getBooks(String title, Long authorId, Long genreId, BigDecimal minPrice,
       BigDecimal maxPrice, SortBy sortBy, SortDirection sortDirection, Pageable pageable) {
-    Specification<Book> spec = Specification.where(BookSpecifications.titleContains(title))
-        .and(BookSpecifications.authorIs(authorId)).and(BookSpecifications.genreIs(genreId))
+    Specification<Book> spec = Specification
+        .where(BookSpecifications.titleContains(title))
+        .and(BookSpecifications.authorIs(authorId))
+        .and(BookSpecifications.genreIs(genreId))
         .and(BookSpecifications.priceBetween(minPrice, maxPrice))
         .and(BookSpecifications.notDeleted())
         .and(BookSpecifications.orderBy(sortBy, sortDirection));
@@ -65,17 +87,37 @@ public class BookServiceImpl implements BookService {
     return books.map(bookMapper::bookToBookDto);
   }
 
+  /**
+   * Получение объекта {@link BookDto} по идентификатору книги.
+   *
+   * @param bookId Идентификатор книги.
+   * @return Объект {@link BookDto}.
+   * @throws EntityNotFoundException, если книга не найдена.
+   */
   @Override
   public BookDto getBookDtoById(Long bookId) {
     return bookMapper.bookToBookDto(getBookById(bookId));
   }
 
+  /**
+   * Получение объекта {@link Book} по идентификатору книги.
+   *
+   * @param bookId Идентификатор книги.
+   * @return Объект {@link Book}.
+   * @throws EntityNotFoundException, если книга не найдена.
+   */
   @Override
   public Book getBookById(Long bookId) {
     return bookRepository.findById(bookId)
         .orElseThrow(() -> new EntityNotFoundException("Книга не найдена"));
   }
 
+  /**
+   * Удаление книги по идентификатору.
+   *
+   * @param bookId Идентификатор книги.
+   * @throws EntityNotFoundException, если книга не найдена.
+   */
   @Override
   @Transactional
   public void deleteBookById(Long bookId) {
@@ -84,6 +126,16 @@ public class BookServiceImpl implements BookService {
     bookRepository.save(book);
   }
 
+  /**
+   * Сохранение обложки книги.
+   *
+   * @param bookId Идентификатор книги.
+   * @param file   Файл с обложкой книги.
+   * @return Путь к сохраненной обложке.
+   * @throws IllegalArgumentException, если файл не передан или пуст.
+   * @throws EntityNotFoundException,  если книга не найдена.
+   * @throws BookCoverException,       если произошла ошибка при сохранении файла обложки.
+   */
   @Override
   @Transactional
   public String saveBookCover(Long bookId, MultipartFile file) {
@@ -115,6 +167,14 @@ public class BookServiceImpl implements BookService {
     }
   }
 
+  /**
+   * Получение обложки книги в виде массива байтов.
+   *
+   * @param bookId Идентификатор книги.
+   * @return Обложка книги в виде массива байтов.
+   * @throws EntityNotFoundException, если книга не найдена.
+   * @throws BookCoverException,      если произошла ошибка при чтении файла обложки.
+   */
   @Override
   public byte[] getBookCover(Long bookId) {
     Book book = getBookById(bookId);
@@ -132,6 +192,12 @@ public class BookServiceImpl implements BookService {
     }
   }
 
+  /**
+   * Экспорт списка книг в формате Excel.
+   *
+   * @return Массив байтов, представляющий Excel-файл с информацией о книгах.
+   * @throws BookExportException, если произошла ошибка при выгрузке книг в Excel.
+   */
   @Override
   public byte[] exportBooksToExcel() {
 
@@ -178,10 +244,34 @@ public class BookServiceImpl implements BookService {
     }
   }
 
+  /**
+   * Сохранение новой книги.
+   *
+   * @param bookDto Объект {@link BookDto}, представляющий новую книгу.
+   * @return Объект {@link BookDto} сохраненной книги.
+   * @throws EntityNotFoundException, если книга с таким ISBN уже существует.
+   */
   @Override
   @Transactional
   public BookDto saveBook(BookDto bookDto) {
     return bookMapper.bookToBookDto(bookRepository.findByISBN(bookDto.ISBN())
         .orElseGet(() -> bookRepository.save(bookMapper.bookDtoToBook(bookDto))));
+  }
+
+  /**
+   * Обновление информации о книге.
+   *
+   * @param bookDto Объект {@link BookDto}, представляющий обновленную информацию о книге.
+   * @return Объект {@link BookDto} обновленной книги.
+   * @throws EntityNotFoundException, если книга не найдена.
+   */
+  @Override
+  @Transactional
+  public BookDto updateBook(BookDto bookDto) {
+    Book existingBook = getBookById(bookDto.bookId());
+
+    bookMapper.updateBookFromDto(bookDto, existingBook);
+
+    return bookMapper.bookToBookDto(existingBook);
   }
 }

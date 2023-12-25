@@ -34,4 +34,6 @@ public interface BookService {
   byte[] exportBooksToExcel();
 
   BookDto saveBook(BookDto bookDto);
+
+  BookDto updateBook(BookDto bookDto);
 }

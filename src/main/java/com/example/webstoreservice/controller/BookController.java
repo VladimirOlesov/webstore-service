@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Контроллер для управления книгами. Предоставляет методы получения страниц с книгами,
+ * информации о конкретной книге и обложки книги.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/books")
@@ -23,6 +27,22 @@ public class BookController {
 
   private final BookService bookService;
 
+  /**
+   * Получение страницы с книгами с учетом параметров фильтрации и сортировки.
+   *
+   * @param title          Фильтрация по названию книги.
+   * @param authorId       Фильтрация по идентификатору автора.
+   * @param genreId        Фильтрация по идентификатору жанра.
+   * @param minPrice       Фильтрация по минимальной цене книги.
+   * @param maxPrice       Фильтрация по максимальной цене книги.
+   * @param sortBy         Поле, по которому выполняется сортировка ({@link SortBy#TITLE},
+   *                       {@link SortBy#PRICE}, {@link SortBy#PUBLICATION_YEAR}).
+   * @param sortDirection  Направление сортировки ({@link SortDirection#ASC} или
+   *                       {@link SortDirection#DESC}).
+   * @param page           Номер страницы при постраничном выводе.
+   * @param size           Количество объектов на странице при постраничном выводе.
+   * @return Объект {@link ResponseEntity} со списком книг {@link Page<BookDto>}.
+   */
   @GetMapping
   public ResponseEntity<Page<BookDto>> getBooks(
       @RequestParam(name = "title", required = false) String title,
@@ -41,11 +61,23 @@ public class BookController {
     return ResponseEntity.ok(books);
   }
 
+  /**
+   * Получение информации о конкретной книге по идентификатору.
+   *
+   * @param bookId Идентификатор книги.
+   * @return Объект {@link ResponseEntity} с информацией о книге {@link BookDto}.
+   */
   @GetMapping("/{bookId}")
   public ResponseEntity<BookDto> getBookById(@PathVariable Long bookId) {
     return ResponseEntity.ok(bookService.getBookDtoById(bookId));
   }
 
+  /**
+   * Получение обложки книги по идентификатору.
+   *
+   * @param bookId Идентификатор книги.
+   * @return Объект {@link ResponseEntity} изображения обложки в виде массива байтов.
+   */
   @GetMapping("/{bookId}/image")
   public ResponseEntity<byte[]> getBookCover(@PathVariable Long bookId) {
     return ResponseEntity.ok()

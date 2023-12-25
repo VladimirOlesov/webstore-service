@@ -63,3 +63,12 @@ management:
     distribution:
       percentiles-histogram:
         "[http.server.requests]": true
+
+logging:
+  level:
+    com.example:
+      webstoreservice:
+        service:
+          impl:
+            AuthorServiceImpl: info
+    root: info
