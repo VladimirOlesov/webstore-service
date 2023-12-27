@@ -9,6 +9,7 @@ import lombok.experimental.FieldNameConstants;
 @FieldNameConstants
 public record BookDto(
     Long bookId,
+    Long version,
     String title,
     @NotNull AuthorDto author,
     @NotNull GenreDto genre,

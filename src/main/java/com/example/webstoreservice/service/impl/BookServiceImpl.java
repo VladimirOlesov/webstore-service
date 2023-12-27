@@ -28,6 +28,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -263,15 +264,22 @@ public class BookServiceImpl implements BookService {
    *
    * @param bookDto Объект {@link BookDto}, представляющий обновленную информацию о книге.
    * @return Объект {@link BookDto} обновленной книги.
-   * @throws EntityNotFoundException, если книга не найдена.
+   * @throws EntityNotFoundException,           если книга не найдена.
+   * @throws OptimisticLockingFailureException, если произошел конфликт версий (книга изменена
+   *                                            другим пользователем).
    */
   @Override
   @Transactional
   public BookDto updateBook(BookDto bookDto) {
     Book existingBook = getBookById(bookDto.bookId());
 
+    if (!existingBook.getVersion().equals(bookDto.version())) {
+      throw new OptimisticLockingFailureException(
+          "Конфликт версий. Книга была изменена другим пользователем");
+    }
+
     bookMapper.updateBookFromDto(bookDto, existingBook);
 
-    return bookMapper.bookToBookDto(existingBook);
+    return bookMapper.bookToBookDto(bookRepository.saveAndFlush(existingBook));
   }
 }

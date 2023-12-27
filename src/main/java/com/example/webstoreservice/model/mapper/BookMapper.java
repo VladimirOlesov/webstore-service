@@ -17,7 +17,6 @@ public interface BookMapper {
   Book bookDtoToBook(BookDto bookDto);
 
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "version", ignore = true)
   @Mapping(source = "author.authorId", target = "author", qualifiedBy = CustomMapping.class)
   @Mapping(source = "genre.genreId", target = "genre", qualifiedBy = CustomMapping.class)
   void updateBookFromDto(BookDto bookDto, @MappingTarget Book book);
