@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 @FeignClient(name = "${feign.webstore-auth-service.user-client.name}",
     url = "${feign.webstore-auth-service.user-client.url}",
-    configuration = UserClient.UserFeignClientConfig.class)
+    configuration = {UserClient.UserFeignClientConfig.class, FeignErrorConfig.class})
 public interface UserClient {
 
   /**

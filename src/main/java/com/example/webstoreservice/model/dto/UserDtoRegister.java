@@ -11,7 +11,7 @@ import lombok.experimental.FieldNameConstants;
 @FieldNameConstants
 public record UserDtoRegister(
     @Pattern(
-        regexp = "^[a-zA-Z0-9_]+$",
+        regexp = "^\\w+$",
         message = "Имя пользователя может содержать только латинские буквы, "
             + "арабские цифры и нижнее подчеркивание")
     @NotBlank @Size(

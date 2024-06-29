@@ -28,10 +28,10 @@ public class AuthorController {
    * @param authorName    Фильтрация по имени автора.
    * @param sortDirection Направление сортировки ({@link SortDirection#ASC} или
    *                      {@link SortDirection#DESC}).
-   * @return Объект {@link ResponseEntity} с списком авторов {@link AuthorDto}.
+   * @return Объект {@link ResponseEntity} со списком авторов {@link AuthorDto}.
    */
   @GetMapping
-  public ResponseEntity<List<AuthorDto>> gerAuthors(
+  public ResponseEntity<List<AuthorDto>> getAuthors(
       @RequestParam(name = "authorName", required = false) String authorName,
       @RequestParam(name = "sortDirection", required = false) SortDirection sortDirection) {
     return ResponseEntity.ok(authorService.getAuthors(authorName, sortDirection));

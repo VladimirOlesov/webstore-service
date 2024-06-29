@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
  * Feign-клиент для взаимодействия с сервисом регистрации и аутентификации.
  */
 @FeignClient(name = "${feign.webstore-auth-service.auth-client.name}",
-    url = "${feign.webstore-auth-service.auth-client.url}")
+    url = "${feign.webstore-auth-service.auth-client.url}",
+    configuration = FeignErrorConfig.class)
 public interface AuthClient {
 
   /**
